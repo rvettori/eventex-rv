@@ -1,5 +1,6 @@
 from django.test import TestCase
 from eventex.subscriptions.forms import SubscriptionForm
+from eventex.subscriptions.models import Subscription
 from django.core import mail
 
 
@@ -18,15 +19,15 @@ class SubscribeGet(TestCase):
 
     def test_html(self):
         """Html must contain input tags"""
-        tags = (('<form',1),
-                ('<input',6),
-                ('type="text"',3),
-                ('type="email"',1),
+        tags = (('<form', 1),
+                ('<input', 6),
+                ('type="text"', 3),
+                ('type="email"', 1),
                 ('type="submit"', 1))
 
         for text, count in tags:
             with self.subTest():
-                self.assertContains(self.resp,text, count)
+                self.assertContains(self.resp, text, count)
 
     def test_csrf(self):
         """Html must contain csrf"""
@@ -52,6 +53,9 @@ class SubscribePostValid(TestCase):
     def test_send_subscribe_email(self):
         self.assertEqual(1, len(mail.outbox))
 
+    def test_save_subscription(self):
+        self.assertTrue(Subscription.objects.exists())
+
 
 class SusbscribePostInvalid(TestCase):
     def setUp(self):
@@ -71,6 +75,9 @@ class SusbscribePostInvalid(TestCase):
     def test_form_has_errors(self):
         form = self.resp.context['form']
         self.assertTrue(form.errors)
+
+    def test_dont_save_subscription(self):
+        self.assertFalse(Subscription.objects.exists())
 
 
 class SubscribeSuccessMessage(TestCase):
