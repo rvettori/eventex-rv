@@ -48,7 +48,8 @@ INSTALLED_APPS = (
     'test_without_migrations',
     'django_extensions',
     'eventex.core',
-    'eventex.subscriptions',
+    # 'eventex.subscriptions',  # registro do modulo subscriptions
+    'eventex.subscriptions.apps.SubscriptionsConfig',  # Sobrescrever configurações para o admin
 )
 
 MIDDLEWARE_CLASSES = (
